@@ -1,0 +1,8 @@
+<launch>    
+        <node ns="camera" pkg="stereo_image_proc" type="stereo_image_proc" name="stereo_image_proc" output="screen">
+        <rosparam>
+        approximate_sync: true
+        queue_size: 5
+        </rosparam>
+        </node>
+</launch>
