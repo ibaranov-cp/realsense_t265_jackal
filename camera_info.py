@@ -2,6 +2,7 @@
 import rospy
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo
+from nav_msgs.msg import Odometry
 
 pub1 = rospy.Publisher('/camera/left/camera_info', CameraInfo, queue_size=1)
 cam1 = CameraInfo()
@@ -35,12 +36,19 @@ def callback2(data):
     cam2.R = [0.9952088902942522, 0.00041151289602378387, -0.09777062614312952, -0.0008204672169983409, 0.9999910827059845, -0.004142625020284677, 0.09776804955009089, 0.004202994842878555, 0.9952003533568112]
     cam2.P = [306.2529556439664, 0.0, 460.38332176208496, -19.89764543392729, 0.0, 306.2529556439664, 412.7985887527466, 0.0, 0.0, 0.0, 1.0, 0.0]
     pub2.publish (cam2)
-    
+
+pub3 = rospy.Publisher('/camera/odom/fixed', Odometry, queue_size=1)
+def callback3(data):
+    global pub3
+    odom = data
+    odom.header.frame_id = "front_mount"
+    pub3.publish (odom)
 
 def inform():
     rospy.init_node('cam_info', anonymous=True)
     rospy.Subscriber("/camera/left/image_raw", Image, callback1)
     rospy.Subscriber("/camera/right/image_raw", Image, callback2)
+    rospy.Subscriber("/camera/odom/sample", Odometry, callback3)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
         rate.sleep()
